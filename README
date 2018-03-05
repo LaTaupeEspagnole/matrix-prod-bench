@@ -1,0 +1,55 @@
+               _____  ______          _____  __  __ ______
+              |  __ \|  ____|   /\   |  __ \|  \/  |  ____|
+              | |__) | |__     /  \  | |  | | \  / | |__
+              |  _  /|  __|   / /\ \ | |  | | |\/| |  __|
+              | | \ \| |____ / ____ \| |__| | |  | | |____
+              |_|  \_\______/_/    \_\_____/|_|  |_|______|
+
+This  is  a  small  project I made to  test  the  performance of simple  multi-
+threading on matrix  product  using  pthread library.  It is  using  the  naive
+algorithm for the product. All main operations are implemented in the library.
+
+
+----- BUILD -----
+
+  Build the library :
+    make lib          -> builds a static lib named libmatrix.a.
+    make lib_debug    -> builds the lib with debug option (-g).
+
+
+  Build a checker for the matrix product :
+    make check        -> build a checker of the threaded  matrix  product using
+                         the single-threaded matrix product.
+    make chk_debug    -> Same as above but with debug option (-g)
+
+  Build  a  bench  program  testing  the  performances  of the threaded  matrix
+  function :
+    make bench        -> builds the bench program
+
+
+----- USE -----
+
+  To use the checker program, run :
+    ./check [max_mat_size]
+
+    max_mat_size  : Max size of the matrix
+
+    The program  will tests the threaded matrix product function by multiplying
+    martices  of size 1x1 to  the size  you specified.   The  program  uses the
+    single-threaded  function  to  check the result.   Les tested  matrices are
+    filled with random floats values using the code :
+      '(float)(rand() % 10000) / 100'.
+
+
+  To use the bench program, run :
+    ./bench [mat_size] [nb_threads]
+
+    mat_size      : Size of the matrix
+    nb_threads    : Number of threads to use
+
+    The program will instanciate two matrices of the size you gave and multiply
+    them with each other  using the multi-threaded function of the library with
+    the number of threads you gave.
+
+----- AUTHORS -----
+  Sébastien GOUBEAU (sebastiengou@outlook.fr)
