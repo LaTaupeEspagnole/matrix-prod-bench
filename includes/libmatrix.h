@@ -87,4 +87,10 @@ void sc_mult_mat_ip(struct mat *a, float m);
 /* Returns the transpose matrix of a */
 struct mat *trans_mat(struct mat *a);
 
+/* Serialize a matrix into a string */
+char *serialize_mat(struct mat *a);
+
+/* Deserialize a string into a matrix */
+struct mat *deseralize_mat(char *str);
+
 #endif /* !LIBMATRIX_H */

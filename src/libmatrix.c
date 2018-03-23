@@ -61,7 +61,7 @@ void print_mat(struct mat *a)
 {
   if (!a)
   {
-    printf("ERROR !\n");
+    printf("NULL matrix !\n");
     return;
   }
   printf("Width: %zu, Height: %zu\n", a->width, a->height);

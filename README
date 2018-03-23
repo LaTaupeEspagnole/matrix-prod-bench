@@ -26,6 +26,10 @@ algorithm for the product. All main operations are implemented in the library.
   function :
     make bench        -> builds the bench program
 
+  Build a program  that test the serialization / deserialization functions on a
+  matrix (other usages will be added in the future) :
+    make test         -> builds the test program
+
 
 ----- USE -----
 
@@ -36,10 +40,9 @@ algorithm for the product. All main operations are implemented in the library.
 
     The program  will tests the threaded matrix product function by multiplying
     martices  of size 1x1 to  the size  you specified.   The  program  uses the
-    single-threaded  function  to  check the result.   Les tested  matrices are
+    single-threaded  function  to  check the result.   The tested  matrices are
     filled with random floats values using the code :
       '(float)(rand() % 10000) / 100'.
-
 
   To use the bench program, run :
     ./bench [mat_size] [nb_threads]
@@ -50,6 +53,19 @@ algorithm for the product. All main operations are implemented in the library.
     The program will instanciate two matrices of the size you gave and multiply
     them with each other  using the multi-threaded function of the library with
     the number of threads you gave.
+    To get the duration of the product run :
+      time ./bench [mat_size] [nb_threads]
+
+  To use the test program, run :
+    ./test [mat_width] [mat_height]
+
+    mat_width     : Width of the matrix
+    mat_height    : Height of the matrix
+
+    The program  will  create a matrix  of the size  you gave, serialize it and
+    then deserialize it. It will then compare the equality of the two matrices.
+
 
 ----- AUTHORS -----
+
   Sébastien GOUBEAU (sebastiengou@outlook.fr)
