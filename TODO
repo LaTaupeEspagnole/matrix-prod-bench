@@ -1,0 +1,24 @@
+                          _______ ____  _____   ____
+                         |__   __/ __ \|  __ \ / __ \
+                            | | | |  | | |  | | |  | |
+                            | | | |  | | |  | | |  | |
+                            | | | |__| | |__| | |__| |
+                            |_|  \____/|_____/ \____/
+
+
+You will find here a non exhaustive list of features that  will be added in the
+future or are in ongoing development.  Feel free to send  me bugs  you found or
+cool features to add to this project (sebastiengou@outlook.fr).
+
+[ ] Not done.
+[~] In progress.
+[+] Done.
+
+
+[~] Test-suit (planed in python 3).
+  [+] Add serialization/deserialization function in the lib.
+  [ ] Program that takes two serialised  matrix and  a  operation, deserializes
+      the  matrix, computes the operation  and returnes  the serialised result.
+  [ ] Make the python script of the test-suite.
+
+[ ] Review the thread creation (potential error in thread creation and join).
