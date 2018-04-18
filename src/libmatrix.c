@@ -4,11 +4,12 @@
 
 #include "libmatrix.h"
 
-struct mat *init_mat(size_t width, size_t height)
+struct mat *dec_mat(size_t width, size_t height)
 {
   struct mat *res = malloc(sizeof (struct mat));
   if (!res)
     return NULL;
+
   res->width = width;
   res->height = height;
   res->array = malloc(width * height * sizeof (float));
@@ -16,6 +17,20 @@ struct mat *init_mat(size_t width, size_t height)
   {
     free(res);
     return NULL;
+  }
+  return res;
+}
+
+struct mat *init_mat(size_t width, size_t height)
+{
+  struct mat *res = dec_mat(width, height);
+  if (!res)
+    return NULL;
+
+  size_t size = width * height;
+  for (size_t i = 0; i < size; ++i)
+  {
+    res->array[i] = 0.0f;
   }
   return res;
 }
@@ -52,7 +67,7 @@ int is_equal(struct mat *a, struct mat *b)
 
   size_t size = a->width * a->height;
   size_t i = 0;
-  while (i < size && a->array[i] == b->array[i])//(fabs(a->array[i] - b->array[i]) < 0.00000001f))
+  while (i < size && a->array[i] == b->array[i])
     ++i;
   return i == size;
 }
@@ -159,7 +174,7 @@ struct mat *sc_mult_mat(struct mat *a, float m)
   return res;
 }
 
-void div_mat_ip(struct mat *a, int d)
+void div_mat_ip(struct mat *a, float d)
 {
   if (!a)
     return;
@@ -191,7 +206,9 @@ struct mat *trans_mat(struct mat *a)
   for (size_t c = 0; c < a->width; ++c)
   {
     for (size_t l = 0; l < a->height; ++l)
+    {
       res->array[l + res->width * c] = a->array[c + a->width * l];
+    }
   }
 
   return res;

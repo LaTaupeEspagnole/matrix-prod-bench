@@ -15,7 +15,13 @@ struct mat
 ** if an error occured.
 */
 
-/* Inits a struct mat. */
+/*
+** Inits a struct mat with not initialised values
+** (more performant that init_mat()).
+*/
+struct mat *dec_mat(size_t width, size_t height);
+
+/* Inits a struct mat initialized with zero's. */
 struct mat *init_mat(size_t width, size_t height);
 
 /* Frees a struct mat and the array in it. */
@@ -73,7 +79,7 @@ struct mat *mult_mat_auto(struct mat *a, struct mat *b, size_t threshold);
 struct mat *div_mat(struct mat *a, float d);
 
 /* Divides matrix a by d and stors the result in a */
-void div_mat_ip(struct mat *a, int d);
+void div_mat_ip(struct mat *a, float d);
 
 /*
 ** Multiplies matrix a by d and stors the result in a new

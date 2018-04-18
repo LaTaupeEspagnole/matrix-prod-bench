@@ -32,7 +32,7 @@ chk_debug: $(CHK)
 
 # --- Sub-targets ---
 
-$(LIB): $(OBJS_LIB) $(LIB)($(OBJS_LIB)) clean_after_lib
+$(LIB): $(OBJS_LIB) $(LIB)($(OBJS_LIB))
 $(CHK): CFLAGS += -O3
 $(CHK): $(OBJS_CHK) $(LIB)
 $(BCH): CFLAGS += -O3
