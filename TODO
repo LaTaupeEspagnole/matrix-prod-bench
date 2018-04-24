@@ -17,8 +17,10 @@ cool features to add to this project (sebastiengou@outlook.fr).
 
 [~] Test-suit (planed in python 3).
   [+] Add serialization/deserialization function in the lib.
-  [ ] Program that takes two serialised  matrix and  a  operation, deserializes
+  [~] Program that takes two serialised  matrix and  a  operation, deserializes
       the  matrix, computes the operation  and returnes  the serialised result.
-  [ ] Make the python script of the test-suite.
+  [ ] Make the python script of the test-suite that calls the command execution
+      program.
 
 [ ] Review the thread creation (potential error in thread creation and join).
+[ ] Review the allocations (potential breach on a bad values for allocation).
