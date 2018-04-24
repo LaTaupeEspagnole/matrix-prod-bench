@@ -1,9 +1,9 @@
-#include "libmatrix.h"
-#include "buffer.h"
-
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "libmatrix.h"
+#include "buffer.h"
 
 char *serialize_mat(struct mat *a)
 {

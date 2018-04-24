@@ -19,7 +19,7 @@ struct buffer
 /**
 ** \fn struct buffer *init_buffer(void)
 ** \brief Init and allocat a buffer to size = 0 and buffer = NULL.
-** \return Returns an initialized an allocated buffer structure.
+** \return Returns an allocated and initialized buffer structure.
 */
 struct buffer *init_buffer(void);
 

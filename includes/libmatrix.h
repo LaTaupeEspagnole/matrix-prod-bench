@@ -1,7 +1,7 @@
 #ifndef LIBMATRIX_H
 # define LIBMATRIX_H
 
-# include "stddef.h"
+# include <stddef.h>
 
 struct mat
 {
