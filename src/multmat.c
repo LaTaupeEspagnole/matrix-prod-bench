@@ -156,3 +156,16 @@ struct mat *mult_mat(const struct mat *a, const struct mat *b)
   mult_mat_inter(a, b, r, init_inter(0, r->width * r->height));
   return r;
 }
+
+struct mat *mult_mat_auto(struct mat *a, struct mat *b,
+                          size_t nb_threads,
+                          size_t threshold)
+{
+  size_t a_size = a->width * a->height;
+  size_t b_size = b->width * b->height;
+  if (a_size < b_size)
+    a_size = b_size;
+  if (a_size < threshold)
+    return mult_mat(a, b);
+  return mult_mat_th(a, b, nb_threads);
+}

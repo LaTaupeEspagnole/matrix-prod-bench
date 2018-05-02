@@ -41,7 +41,7 @@ size_t get_padding(char *str, size_t item_index)
   return str - save;
 }
 
-struct mat *deseralize_mat(char *str)
+struct mat *deserialize_mat(char *str)
 {
   if (!str)
     return NULL;

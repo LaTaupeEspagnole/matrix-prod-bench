@@ -64,13 +64,17 @@ void sub_mat_ip(struct mat *a, struct mat *b);
 struct mat *mult_mat(const struct mat *a, const struct mat *b);
 
 /* Same as mult_mat() but using nb_threads threads */
-struct mat *mult_mat_th(const struct mat *a, const struct mat *b, const size_t nb_threads);
+struct mat *mult_mat_th(const struct mat *a, const struct mat *b,
+                        const size_t nb_threads);
 
 /*
-** Same as mult_mat() is width x heigth < threshold
-** Otherwise same as mult_mat_th()
+** Same as mult_mat() if
+** max(a->width x a->heigth, b->width x b->height) < threshold
+** Otherwise same as mult_mat_th() with nb_threads threads.
 */
-struct mat *mult_mat_auto(struct mat *a, struct mat *b, size_t threshold);
+struct mat *mult_mat_auto(struct mat *a, struct mat *b,
+                          size_t nb_threads,
+                          size_t threshold);
 
 /*
 ** Divides matrix a by d and stors the result in a new
@@ -97,6 +101,6 @@ struct mat *trans_mat(struct mat *a);
 char *serialize_mat(struct mat *a);
 
 /* Deserialize a string into a matrix */
-struct mat *deseralize_mat(char *str);
+struct mat *deserialize_mat(char *str);
 
 #endif /* !LIBMATRIX_H */
