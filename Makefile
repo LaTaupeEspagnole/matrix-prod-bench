@@ -18,7 +18,7 @@ OBJS_TST= test.o
 lib: $(LIB)
 check: $(LIB) $(OBJS_CHK)
 bench: $(LIB) $(OBJS_BCH)
-test: CFLAGS += -g
+test: CFLAGS += -O3
 test: $(LIB)
 test: $(OBJS_TST)
 lib_debug: clean_lib
@@ -32,6 +32,9 @@ check_opti: CFLAGS += -O3
 check_opti: check
 bench_opti: CFLAGS += -O3
 bench_opti: bench
+test-suite: test
+test-suite:
+	tests/test-suite.py tests/json-tests/ ./test
 
 $(LIB): $(OBJS_LIB)
 	ar r $@ $^
@@ -39,7 +42,7 @@ $(LIB): $(OBJS_LIB)
 
 # --- Cleanng targets ---
 
-clean: clean_lib clean_chk clean_bch clean_tst
+clean: clean_lib clean_chk clean_bch clean_tst clean_py
 clean_bch:
 	$(RM) $(OBJS_BCH)
 	$(RM) bench
@@ -52,3 +55,6 @@ clean_chk:
 clean_tst:
 	$(RM) $(OBJS_TST)
 	$(RM) test
+
+clean_py:
+	$(RM) -r tests/__pycache__

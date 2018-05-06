@@ -59,21 +59,6 @@ int main(int argc, char *argv[])
 
   if (!strcmp(argv[1], "help"))
   {
-    if (argc > 2)
-    {
-      if (!strcmp(argv[2], "dec"))
-      {
-        printf(" -Commande: dec\n");
-        printf(" -Function prototype:\n");
-        printf("    struct mat *dec_mat(size_t width, size_t height);\n");
-        printf(" -stdin: num1;num2;\n");
-        printf("    num1 -> width\n");
-        printf("    num2 -> height\n");
-        printf(" -stdout: One serialized matrix.\n");
-      }
-      return 0;
-    }
-
     printf("Help : ");
     printf("This program takes a command as parameter and stdin\n");
     printf("data and returns stdout data related to the command\n\n");

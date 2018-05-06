@@ -19,7 +19,7 @@ cool features to add to this project (sebastiengou@outlook.fr).
   [+] Add serialization/deserialization function in the lib.
   [~] Program that takes two serialised  matrix and  a  operation, deserializes
       the  matrix, computes the operation  and returnes  the serialised result.
-  [ ] Make the python script of the test-suite that calls the command execution
+  [~] Make the python script of the test-suite that calls the command execution
       program.
 
 [ ] Review the thread creation (potential error in thread creation and join).
