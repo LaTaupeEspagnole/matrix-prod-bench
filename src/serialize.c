@@ -56,6 +56,8 @@ struct mat *deserialize_mat(char *str)
   }
 
   struct mat *res = init_mat(width, height);
+  if (!res)
+    return NULL;
   size_t mat_size = res->width * res->height;
   size_t padding = get_padding(str, 2);
   for (size_t i = 0; i < mat_size; ++i)

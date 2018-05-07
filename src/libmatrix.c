@@ -6,6 +6,9 @@
 
 struct mat *dec_mat(size_t width, size_t height)
 {
+  if (!width || !height)
+    return NULL;
+
   struct mat *res = malloc(sizeof (struct mat));
   if (!res)
     return NULL;
@@ -62,7 +65,7 @@ struct mat *copy_mat(struct mat *m)
 
 int is_equal(struct mat *a, struct mat *b)
 {
-  if ((a->width != b->width) || (a->height != b->height))
+  if (!a || !b || (a->width != b->width) || (a->height != b->height))
     return 0;
 
   size_t size = a->width * a->height;
