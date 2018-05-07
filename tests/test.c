@@ -161,6 +161,11 @@ int main(int argc, char *argv[])
       return 3;
     }
     struct mat *in = deserialize_mat(item1->buffer);
+    if (!in)
+    {
+      fprintf(stderr, "Invalid input format.\n");
+      return 3;
+    }
     struct mat *out = copy_mat(in);
     if (!out)
     {

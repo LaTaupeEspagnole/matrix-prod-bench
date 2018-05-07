@@ -2,12 +2,12 @@
   "test_type": "simple",
   "stdin": "2;2;",
   "command": "dec",
-  "expected_stdout": "skip",
-  "expected_stderr": "skip",
+  "expected_stdout": "",
+  "expected_stderr": "",
   "expected_exitstatus": "0",
-  "exact_stdout": "true",
+  "exact_stdout": "false",
   "exact_stderr": "true",
-  "test_description": "Template description",
-  "test_name": "Template name",
+  "test_name": "",
+  "test_description": "",
   "test_timeout": "0"
 }
