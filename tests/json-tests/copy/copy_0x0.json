@@ -1,0 +1,13 @@
+{
+  "test_type": "simple",
+  "stdin": "M0:0:",
+  "command": "cpy",
+  "expected_stdout": "",
+  "expected_stderr": "Invalid input format",
+  "expected_exitstatus": "3",
+  "exact_stdout": "true",
+  "exact_stderr": "false",
+  "test_name": "Copy 0x0",
+  "test_description": "Copy of a 0x0 matrix",
+  "test_timeout": "0"
+}

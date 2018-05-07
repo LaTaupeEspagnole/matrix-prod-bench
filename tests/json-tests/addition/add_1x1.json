@@ -1,0 +1,13 @@
+{
+  "test_type": "simple",
+  "stdin": "M1:1:42.120000:;M1:1:24.210000:;",
+  "command": "add",
+  "expected_stdout": "M1:1:66.33",
+  "expected_stderr": "",
+  "expected_exitstatus": "0",
+  "exact_stdout": "false",
+  "exact_stderr": "true",
+  "test_name": "Add 1x1",
+  "test_description": "Addition of two 1x1 matrices",
+  "test_timeout": "0"
+}

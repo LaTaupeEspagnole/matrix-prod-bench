@@ -1,0 +1,13 @@
+{
+  "test_type": "simple",
+  "stdin": "1;1;",
+  "command": "ini",
+  "expected_stdout": "M1:1:0.000000:\\n",
+  "expected_stderr": "",
+  "expected_exitstatus": "0",
+  "exact_stdout": "true",
+  "exact_stderr": "true",
+  "test_name": "Init 1x1",
+  "test_description": "Initialisation of 1x1 matrix",
+  "test_timeout": "0"
+}

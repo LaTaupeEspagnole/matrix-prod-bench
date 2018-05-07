@@ -1,0 +1,13 @@
+{
+  "test_type": "simple",
+  "stdin": "0;0;",
+  "command": "ini",
+  "expected_stdout": "",
+  "expected_stderr": "Function error.\\n",
+  "expected_exitstatus": "5",
+  "exact_stdout": "true",
+  "exact_stderr": "true",
+  "test_name": "Init 0x0",
+  "test_description": "Initialisation of 0x0 matrix",
+  "test_timeout": "0"
+}

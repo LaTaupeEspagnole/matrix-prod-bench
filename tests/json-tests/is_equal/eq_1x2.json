@@ -1,0 +1,13 @@
+{
+  "test_type": "simple",
+  "stdin": "M1:2:42.123456:118:234598:;M1:2:42.123456:118:234598:;",
+  "command": "ieq",
+  "expected_stdout": "True",
+  "expected_stderr": "",
+  "expected_exitstatus": "0",
+  "exact_stdout": "false",
+  "exact_stderr": "true",
+  "test_name": "Equal 1x2",
+  "test_description": "Two 1x2 equal matrices",
+  "test_timeout": "0"
+}

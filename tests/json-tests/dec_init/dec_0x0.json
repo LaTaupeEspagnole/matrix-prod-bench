@@ -1,0 +1,13 @@
+{
+  "test_type": "simple",
+  "stdin": "0;0;",
+  "command": "dec",
+  "expected_stdout": "",
+  "expected_stderr": "Function error.\\n",
+  "expected_exitstatus": "5",
+  "exact_stdout": "true",
+  "exact_stderr": "true",
+  "test_name": "Dec 0x0",
+  "test_description": "Declaration of 0x0 matrix",
+  "test_timeout": "0"
+}

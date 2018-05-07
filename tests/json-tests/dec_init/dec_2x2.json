@@ -1,0 +1,13 @@
+{
+  "test_type": "simple",
+  "stdin": "2;2;",
+  "command": "dec",
+  "expected_stdout": "M2:2:",
+  "expected_stderr": "",
+  "expected_exitstatus": "0",
+  "exact_stdout": "false",
+  "exact_stderr": "true",
+  "test_name": "Dec 2x2",
+  "test_description": "Declaration of 2x2 matrix",
+  "test_timeout": "0"
+}
