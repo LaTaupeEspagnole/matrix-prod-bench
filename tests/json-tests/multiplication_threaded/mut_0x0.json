@@ -1,0 +1,13 @@
+{
+  "test_type": "simple",
+  "stdin": "M0:0:;M0:0:;4:",
+  "command": "mut",
+  "expected_stdout": "",
+  "expected_stderr": "Function error",
+  "expected_exitstatus": "5",
+  "exact_stdout": "true",
+  "exact_stderr": "false",
+  "test_name": "Mul thr 0x0",
+  "test_description": "Multiplication threaded of two 0x0 matrices",
+  "test_timeout": "0"
+}

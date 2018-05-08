@@ -1,0 +1,13 @@
+{
+  "test_type": "simple",
+  "stdin": "M2:2:42:43:44:45:;M2:2:24:12:9:2:;",
+  "command": "adi",
+  "expected_stdout": "M2:2:66.000000:55.000000:53.000000:47.000000:",
+  "expected_stderr": "",
+  "expected_exitstatus": "0",
+  "exact_stdout": "false",
+  "exact_stderr": "true",
+  "test_name": "Add in place 2x2",
+  "test_description": "Addition in place of two 2x2 matrices",
+  "test_timeout": "0"
+}
