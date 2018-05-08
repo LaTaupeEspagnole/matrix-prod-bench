@@ -161,6 +161,9 @@ struct mat *mult_mat_auto(struct mat *a, struct mat *b,
                           size_t nb_threads,
                           size_t threshold)
 {
+  if (!a || !b || !is_mult_ok(a, b))
+    return NULL;
+
   size_t a_size = a->width * a->height;
   size_t b_size = b->width * b->height;
   if (a_size < b_size)

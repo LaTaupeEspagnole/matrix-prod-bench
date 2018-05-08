@@ -20,15 +20,16 @@ algorithm for the product. All main operations are implemented in the library.
   Build a checker for the matrix product :
     make check        -> build a checker of the threaded  matrix  product using
                          the single-threaded matrix product.
-    make chk_debug    -> Same as above but with debug option (-g)
+    make chk_debug    -> Same as above but with debug option (-g).
 
   Build  a  bench  program  testing  the  performances  of the threaded  matrix
   function :
-    make bench        -> builds the bench program
+    make bench        -> builds the bench program.
 
-  Build a program  that test the serialization / deserialization functions on a
-  matrix (other usages will be added in the future) :
-    make test         -> builds the test program
+  Build and run the test-suite:
+    make test         -> builds   the  test  program   (program   that  executs
+                         functions of the lib).
+    make test-suite   -> builds the test program and starts the test-suite.
 
 
 ----- USE -----
