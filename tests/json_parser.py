@@ -27,21 +27,6 @@ class TestObj(object):
     self.test_name =            test_name
     self.test_timeout =         test_timeout
 
-def obj_decode(obj):
-  if '__type__' in obj and obj['__type__'] == 'TestObj':
-    return TestFile(obj['test_type'],
-                    obj['stdin'],
-                    obj['command'],
-                    obj['expected_stdout'],
-                    obj['expected_stderr'],
-                    obj['expected_exitstatus'],
-                    obj['exact_stdout'],
-                    obj['exact_stderr'],
-                    obj['test_description'],
-                    obj['test_name'],
-                    obj['test_timeout'])
-  return obj
-
 def load_test_file(file_name):
   test_file = open(file_name, 'r')
   return json.load(test_file)

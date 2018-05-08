@@ -241,6 +241,11 @@ int main(int argc, char *argv[])
     struct mat *in2 = deserialize_mat(item2->buffer);
     add_mat_ip(in1, in2);
     char *res = serialize_mat(in1);
+    if (!res)
+    {
+      fprintf(stderr, "Function error.\n");
+      return 5;
+    }
     printf("%s\n", res);
     free_buffer(item1);
     free_buffer(item2);
@@ -289,6 +294,11 @@ int main(int argc, char *argv[])
     struct mat *in2 = deserialize_mat(item2->buffer);
     sub_mat_ip(in1, in2);
     char *res = serialize_mat(in1);
+    if (!res)
+    {
+      fprintf(stderr, "Function error.\n");
+      return 5;
+    }
     printf("%s\n", res);
     free_buffer(item1);
     free_buffer(item2);
