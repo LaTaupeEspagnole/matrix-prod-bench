@@ -1,0 +1,13 @@
+simple
+200
+200
+mts
+
+0
+false
+true
+Mul 200x200
+Multiplication of two 200x200 matrices using simd
+0
+json-tests/multiplication_threaded_simd/mts_200x200.json
+

@@ -1,0 +1,13 @@
+simple
+20
+20
+mus
+
+0
+false
+true
+Mul 20x20
+Multiplication of two 20x20 matrices using simd
+0
+json-tests/multiplication_simd/mus_20x20.json
+

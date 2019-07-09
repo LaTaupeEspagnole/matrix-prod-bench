@@ -5,6 +5,64 @@
 #include "libmatrix.h"
 #include "buffer.h"
 
+char* get_next_line(char* str)
+{
+  while (*str != '\0' && *str != '\n')
+    ++str;
+  if (*str == '\0')
+    return NULL;
+  return str + 1;
+}
+
+char* serialize_matrix(struct mat* matrix)
+{
+  struct buffer buffer = {.size = 0, .buffer = NULL};
+  char* tmp = malloc(100 * sizeof(char));
+  if (!tmp)
+    return NULL;
+
+  sprintf(tmp, "%zu\n", matrix->width);
+  add_buffer(&buffer, tmp, strlen(tmp));
+  sprintf(tmp, "%zu\n", matrix->height);
+  add_buffer(&buffer, tmp, strlen(tmp));
+  size_t max = matrix->width * matrix->height;
+  for (size_t i = 0; i < max; ++i)
+  {
+    sprintf(tmp, "%f\n", matrix->array[i]);
+    add_buffer(&buffer, tmp, strlen(tmp));
+  }
+  free(tmp);
+
+  return buffer.buffer;
+}
+
+struct mat* deserialize_matrix(char* str, char** new_pos)
+{
+  unsigned width = 0;
+  unsigned height = 0;
+
+  if (!sscanf(str, "%u\n", &width))
+    return NULL;
+  str = get_next_line(str);
+  if (!sscanf(str, "%u\n", &height))
+    return NULL;
+  str = get_next_line(str);
+  struct mat* matrix = dec_mat(width, height);
+  unsigned max = width * height;
+  for (unsigned i = 0; i < max; ++i)
+  {
+    if (!sscanf(str, "%f\n", matrix->array + i))
+    {
+      free_mat(matrix);
+      return NULL;
+    }
+    str = get_next_line(str);
+  }
+  *new_pos = str;
+
+  return matrix;
+}
+
 char *serialize_mat(struct mat *a)
 {
   if (!a)

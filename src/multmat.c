@@ -2,6 +2,10 @@
 #include <pthread.h>
 #include <math.h>
 
+#include <stdio.h>
+
+#include <immintrin.h>
+
 #include "multmat.h"
 
 struct inter init_inter(const size_t begin, const size_t end)
@@ -38,21 +42,70 @@ static inline size_t is_mult_ok(const struct mat *a, const struct mat *b)
   return a->width == b->height;
 }
 
-static inline void comput_case(const struct mat *a,
-                               const struct mat *b,
-                               const struct mat *res,
-                               const size_t lin,
-                               const size_t col)
+static inline void comput_case_naive(const struct mat *a,
+                                     const struct mat *b,
+                                     const struct mat *res,
+                                     const size_t lin,
+                                     const size_t col)
 {
-  set_val_mat(res, lin, col, get_val_mat(a, lin, 0) * get_val_mat(b, 0, col));
-  for (size_t i = 1; i < a->width; ++i)
+  for (size_t i = 0; i < a->width; i++)
     add_val_mat(res, lin, col, get_val_mat(a, lin, i) * get_val_mat(b, i, col));
+}
+
+static inline void comput_case_simd(const struct mat *a,
+                                    const struct mat *b,
+                                    const struct mat *res,
+                                    const size_t lin,
+                                    const size_t col)
+{
+  const size_t limit = (a->width / 8) * 8;
+  const size_t widthA = a->width;
+  const size_t widthB = b->width;
+  float tmpRes = 0;
+  for (size_t i = 0; i < limit; i += 8) {
+    float matA[8] __attribute__((aligned (32)));
+    matA[0] = a->array[i + lin * widthA]; //get_val_mat(a, lin, i);
+    matA[1] = a->array[i + 1 + lin * widthA]; //get_val_mat(a, lin, i + 1);
+    matA[2] = a->array[i + 2 + lin * widthA]; //get_val_mat(a, lin, i + 2);
+    matA[3] = a->array[i + 3 + lin * widthA]; //get_val_mat(a, lin, i + 3);
+    matA[4] = a->array[i + 4 + lin * widthA]; //get_val_mat(a, lin, i + 4);
+    matA[5] = a->array[i + 5 + lin * widthA]; //get_val_mat(a, lin, i + 5);
+    matA[6] = a->array[i + 6 + lin * widthA]; //get_val_mat(a, lin, i + 6);
+    matA[7] = a->array[i + 7 + lin * widthA]; //get_val_mat(a, lin, i + 7);
+    float matB[8] __attribute__((aligned (32)));
+    matB[0] = b->array[col + i * widthB]; //get_val_mat(b, i, col);
+    matB[1] = b->array[col + i + 1 * widthB]; //get_val_mat(b, i + 1, col);
+    matB[2] = b->array[col + i + 2 * widthB]; //get_val_mat(b, i + 2, col);
+    matB[3] = b->array[col + i + 3 * widthB]; //get_val_mat(b, i + 3, col);
+    matB[4] = b->array[col + i + 4 * widthB]; //get_val_mat(b, i + 4, col);
+    matB[5] = b->array[col + i + 5 * widthB]; //get_val_mat(b, i + 5, col);
+    matB[6] = b->array[col + i + 6 * widthB]; //get_val_mat(b, i + 6, col);
+    matB[7] = b->array[col + i + 7 * widthB]; //get_val_mat(b, i + 7, col);
+
+    __m256 vect_matA = _mm256_load_ps(matA);
+    __m256 vect_matB = _mm256_load_ps(matB);
+    __m256 vect_res  = _mm256_mul_ps(vect_matA, vect_matB);
+    float resVals[8] __attribute__((aligned (32)));
+    _mm256_store_ps(resVals, vect_res);
+    tmpRes += resVals[0] + resVals[1] + resVals[2] + resVals[3]
+              + resVals[4] + resVals[5] + resVals[6] + resVals[7];
+  }
+
+  for (size_t i = limit; i < a->width; i++)
+    tmpRes += get_val_mat(a, lin, i) * get_val_mat(b, i, col);
+
+  add_val_mat(res, lin, col, tmpRes);
 }
 
 static void mult_mat_inter(const struct mat *a,
                            const struct mat *b,
                            const struct mat *res,
-                           const struct inter inter)
+                           const struct inter inter,
+                           void (*comput_case_func)(const struct mat *a,
+                                                    const struct mat *b,
+                                                    const struct mat *res,
+                                                    const size_t lin,
+                                                    const size_t col))
 {
   size_t start_lin = inter.begin / res->width;
   size_t start_col = inter.begin % res->width;
@@ -62,24 +115,50 @@ static void mult_mat_inter(const struct mat *a,
   if (start_lin == end_lin)
   {
     for (size_t c = start_col; c < end_col; ++c)
-      comput_case(a, b, res, start_lin, c);
+      (*comput_case_func)(a, b, res, start_lin, c);
     return;
   }
 
   for (size_t c = start_col; c < res->width; ++c)
-    comput_case(a, b, res, start_lin, c);
+    (*comput_case_func)(a, b, res, start_lin, c);
 
   if (end_lin != start_lin + 1)
   {
     for (size_t l = start_lin + 1; l < end_lin; ++l)
     {
       for (size_t c = 0; c < res->width; ++c)
-        comput_case(a, b, res, l, c);
+        (*comput_case_func)(a, b, res, l, c);
     }
   }
 
   for (size_t c = 0; c < end_col; ++c)
-    comput_case(a, b, res, end_lin, c);
+    (*comput_case_func)(a, b, res, end_lin, c);
+}
+
+struct mat *mult_mat(const struct mat *a,
+                     const struct mat *b,
+                     void (*comput_case_func)(const struct mat *a,
+                                              const struct mat *b,
+                                              const struct mat *res,
+                                              const size_t lin,
+                                              const size_t col))
+{
+  if (!a || !b || !is_mult_ok(a, b))
+    return NULL;
+
+  struct mat *r = init_mat(b->width, a->height);
+  mult_mat_inter(a, b, r, init_inter(0, r->width * r->height), comput_case_func);
+  return r;
+}
+
+struct mat *mult_mat_naive(const struct mat *a, const struct mat *b)
+{
+  return mult_mat(a, b, comput_case_naive);
+}
+
+struct mat *mult_mat_simd(const struct mat *a, const struct mat *b)
+{
+  return mult_mat(a, b, comput_case_simd);
 }
 
 static inline struct thread_info init_thread_info(const struct mat *a,
@@ -92,13 +171,14 @@ static inline struct thread_info init_thread_info(const struct mat *a,
   ti.res = res;
   ti.inter.begin = 0;
   ti.inter.end = 0;
+  ti.comput_case_func = comput_case_naive;
   return ti;
 }
 
 static void *warper_mult_mat_inter(void *arg)
 {
   struct thread_info *ti = arg;
-  mult_mat_inter(ti->a, ti->b, ti->res, ti->inter);
+  mult_mat_inter(ti->a, ti->b, ti->res, ti->inter, ti->comput_case_func);
   return NULL;
 }
 
@@ -115,14 +195,21 @@ static void start_threads(struct thread_info *ti, const size_t nb_threads)
   free(tid);
 }
 
-struct mat *mult_mat_th(const struct mat *a, const struct mat *b, const size_t nb_threads)
+struct mat *mult_mat_th(const struct mat *a,
+                        const struct mat *b,
+                        const size_t nb_threads,
+                        void (*comput_case_func)(const struct mat *a,
+                                                 const struct mat *b,
+                                                 const struct mat *res,
+                                                 const size_t lin,
+                                                 const size_t col))
 {
   if (!a || !b || !is_mult_ok(a, b))
     return NULL;
 
   float size_res = b->width * a->height;
   if (size_res < nb_threads)
-    return mult_mat(a, b);
+    return mult_mat(a, b, comput_case_func);
 
   struct thread_info *ti = malloc(nb_threads * sizeof (struct thread_info));
   size_t thread = 0;
@@ -139,6 +226,7 @@ struct mat *mult_mat_th(const struct mat *a, const struct mat *b, const size_t n
       ti[thread].inter.end = size_res;
     else
       ti[thread].inter.end = roundf(begi + frac);
+    ti[thread].comput_case_func = comput_case_func;
     ++thread;
   }
 
@@ -147,14 +235,18 @@ struct mat *mult_mat_th(const struct mat *a, const struct mat *b, const size_t n
   return r;
 }
 
-struct mat *mult_mat(const struct mat *a, const struct mat *b)
+struct mat *mult_mat_th_naive(const struct mat *a,
+                              const struct mat *b,
+                              const size_t nb_threads)
 {
-  if (!a || !b || !is_mult_ok(a, b))
-    return NULL;
+  return mult_mat_th(a, b, nb_threads, comput_case_naive);
+}
 
-  struct mat *r = init_mat(b->width, a->height);
-  mult_mat_inter(a, b, r, init_inter(0, r->width * r->height));
-  return r;
+struct mat *mult_mat_th_simd(const struct mat *a,
+                              const struct mat *b,
+                              const size_t nb_threads)
+{
+  return mult_mat_th(a, b, nb_threads, comput_case_simd);
 }
 
 struct mat *mult_mat_auto(struct mat *a, struct mat *b,
@@ -169,6 +261,6 @@ struct mat *mult_mat_auto(struct mat *a, struct mat *b,
   if (a_size < b_size)
     a_size = b_size;
   if (a_size < threshold)
-    return mult_mat(a, b);
-  return mult_mat_th(a, b, nb_threads);
+    return mult_mat_naive(a, b);
+  return mult_mat_th_naive(a, b, nb_threads);
 }

@@ -1,0 +1,13 @@
+simple
+15
+15
+mus
+
+0
+false
+true
+Mul 15x15
+Multiplication of two 15x15 matrices using simd
+0
+json-tests/multiplication_simd/mus_15x15.json
+

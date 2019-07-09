@@ -1,0 +1,13 @@
+simple
+100
+100
+mts
+
+0
+false
+true
+Mul 100x100
+Multiplication of two 100x100 matrices using simd
+0
+json-tests/multiplication_threaded_simd/mts_100x100.json
+

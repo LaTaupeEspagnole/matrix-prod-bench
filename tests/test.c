@@ -63,25 +63,27 @@ int main(int argc, char *argv[])
     printf("This program takes a command as parameter and stdin\n");
     printf("data and returns stdout data related to the command\n\n");
     printf("List of the commands and the related function called :\n\n");
-    printf("  +---------+-----------------+--------------------------+--------------+\n");
-    printf("  | Command | Function        | stdin                    | stdout       |\n");
-    printf("  +---------+-----------------+--------------------------+--------------+\n");
-    printf("  | dec     | dec_mat()       | num1;num2;               | 1 matrix     |\n");
-    printf("  | ini     | init_mat()      | num1;num2;               | 1 matrix     |\n");
-    printf("  | cpy     | copy_mat()      | mat;                     | 1 matrix     |\n");
-    printf("  | ieq     | is_equal()      | mat1;mat2;               | [True|False] |\n");
-    printf("  | add     | add_mat()       | mat1;mat2;               | 1 matrix     |\n");
-    printf("  | adi     | add_mat_ip()    | mat1;mat2;               | 1 matrix     |\n");
-    printf("  | sub     | sub_mat()       | mat1;mat2;               | 1 matrix     |\n");
-    printf("  | sui     | sub_mat_ip()    | mat1;mat2;               | 1 matrix     |\n");
-    printf("  | mul     | mult_mat()      | mat1;mat2;               | 1 matrix     |\n");
-    printf("  | mut     | mult_mat_th()   | mat1;mat2;thrds;         | 1 matrix     |\n");
-    printf("  | mua     | mult_mat_auto() | mat1;mat2;thrds;thrshld; | 1 matrix     |\n");
-    printf("  | div     | div_mat()       | mat1;float;              | 1 matrix     |\n");
-    printf("  | dii     | div_mat_ip()    | mat1;float;              | 1 matrix     |\n");
-    printf("  | scm     | sc_mult_mat()   | mat1;float;              | 1 matrix     |\n");
-    printf("  | tra     | trans_mat()     | mat;                     | 1 matrix     |\n");
-    printf("  +---------+-----------------+--------------------------+--------------+\n");
+    printf("  +---------+---------------------+--------------------------+--------------+\n");
+    printf("  | Command | Function            | stdin                    | stdout       |\n");
+    printf("  +---------+---------------------+--------------------------+--------------+\n");
+    printf("  | dec     | dec_mat()           | num1;num2;               | 1 matrix     |\n");
+    printf("  | ini     | init_mat()          | num1;num2;               | 1 matrix     |\n");
+    printf("  | cpy     | copy_mat()          | mat;                     | 1 matrix     |\n");
+    printf("  | ieq     | is_equal()          | mat1;mat2;               | [True|False] |\n");
+    printf("  | add     | add_mat()           | mat1;mat2;               | 1 matrix     |\n");
+    printf("  | adi     | add_mat_ip()        | mat1;mat2;               | 1 matrix     |\n");
+    printf("  | sub     | sub_mat()           | mat1;mat2;               | 1 matrix     |\n");
+    printf("  | sui     | sub_mat_ip()        | mat1;mat2;               | 1 matrix     |\n");
+    printf("  | mul     | mult_mat_naive()    | mat1;mat2;               | 1 matrix     |\n");
+    printf("  | mus     | mult_mat_simd()     | mat1;mat2;               | 1 matrix     |\n");
+    printf("  | mut     | mult_mat_th_naive() | mat1;mat2;thrds;         | 1 matrix     |\n");
+    printf("  | mts     | mult_mat_th_simd()  | mat1;mat2;thrds;         | 1 matrix     |\n");
+    printf("  | mua     | mult_mat_auto()     | mat1;mat2;thrds;thrshld; | 1 matrix     |\n");
+    printf("  | div     | div_mat()           | mat1;float;              | 1 matrix     |\n");
+    printf("  | dii     | div_mat_ip()        | mat1;float;              | 1 matrix     |\n");
+    printf("  | scm     | sc_mult_mat()       | mat1;float;              | 1 matrix     |\n");
+    printf("  | tra     | trans_mat()         | mat;                     | 1 matrix     |\n");
+    printf("  +---------+---------------------+--------------------------+--------------+\n");
     printf("\n");
     printf("Return values :\n");
     printf(" 0 -> Everything whent well.\n");
@@ -116,11 +118,11 @@ int main(int argc, char *argv[])
     struct mat *a = dec_mat(num1, num2);
     if (!a)
     {
-      fprintf(stderr, "Function error.\n");
+      fprintf(stderr, "Function error.");
       return 5;
     }
     char *res = serialize_mat(a);
-    printf("%s\n", res);
+    printf("%s", res);
     free_buffer(item1);
     free_buffer(item2);
     free_mat(a);
@@ -133,7 +135,7 @@ int main(int argc, char *argv[])
     struct buffer *item2 = get_item(buffer->buffer, 1);
     if (!item1 || !item2)
     {
-      fprintf(stderr, "Invalid input format.\n");
+      fprintf(stderr, "Invalid input format.");
       return 3;
     }
     size_t num1 = atoi(item1->buffer);
@@ -141,11 +143,11 @@ int main(int argc, char *argv[])
     struct mat *a = init_mat(num1, num2);
     if (!a)
     {
-      fprintf(stderr, "Function error.\n");
+      fprintf(stderr, "Function error.");
       return 5;
     }
     char *res = serialize_mat(a);
-    printf("%s\n", res);
+    printf("%s", res);
     free_buffer(item1);
     free_buffer(item2);
     free_mat(a);
@@ -157,23 +159,23 @@ int main(int argc, char *argv[])
     struct buffer *item1 = get_item(buffer->buffer, 0);
     if (!item1)
     {
-      fprintf(stderr, "Invalid input format.\n");
+      fprintf(stderr, "Invalid input format.");
       return 3;
     }
     struct mat *in = deserialize_mat(item1->buffer);
     if (!in)
     {
-      fprintf(stderr, "Invalid input format.\n");
+      fprintf(stderr, "Invalid input format.");
       return 3;
     }
     struct mat *out = copy_mat(in);
     if (!out)
     {
-      fprintf(stderr, "Function error.\n");
+      fprintf(stderr, "Function error.");
       return 5;
     }
     char *res = serialize_mat(out);
-    printf("%s\n", res);
+    printf("%s", res);
     free_buffer(item1);
     free_mat(in);
     free_mat(out);
@@ -186,15 +188,15 @@ int main(int argc, char *argv[])
     struct buffer *item2 = get_item(buffer->buffer, 1);
     if (!item1 || !item2)
     {
-      fprintf(stderr, "Invalid input format.\n");
+      fprintf(stderr, "Invalid input format.");
       return 3;
     }
     struct mat *in1 = deserialize_mat(item1->buffer);
     struct mat *in2 = deserialize_mat(item2->buffer);
     if (is_equal(in1, in2))
-      printf("True\n");
+      printf("True");
     else
-      printf("False\n");
+      printf("False");
     free_buffer(item1);
     free_buffer(item2);
     free_mat(in1);
@@ -207,7 +209,7 @@ int main(int argc, char *argv[])
     struct buffer *item2 = get_item(buffer->buffer, 1);
     if (!item1 || !item2)
     {
-      fprintf(stderr, "Invalid input format.\n");
+      fprintf(stderr, "Invalid input format.");
       return 3;
     }
     struct mat *in1 = deserialize_mat(item1->buffer);
@@ -215,11 +217,11 @@ int main(int argc, char *argv[])
     struct mat *out = add_mat(in1, in2);
     if (!out)
     {
-      fprintf(stderr, "Function error.\n");
+      fprintf(stderr, "Function error.");
       return 5;
     }
     char *res = serialize_mat(out);
-    printf("%s\n", res);
+    printf("%s", res);
     free_buffer(item1);
     free_buffer(item2);
     free_mat(in1);
@@ -234,7 +236,7 @@ int main(int argc, char *argv[])
     struct buffer *item2 = get_item(buffer->buffer, 1);
     if (!item1 || !item2)
     {
-      fprintf(stderr, "Invalid input format.\n");
+      fprintf(stderr, "Invalid input format.");
       return 3;
     }
     struct mat *in1 = deserialize_mat(item1->buffer);
@@ -243,10 +245,10 @@ int main(int argc, char *argv[])
     char *res = serialize_mat(in1);
     if (!res)
     {
-      fprintf(stderr, "Function error.\n");
+      fprintf(stderr, "Function error.");
       return 5;
     }
-    printf("%s\n", res);
+    printf("%s", res);
     free_buffer(item1);
     free_buffer(item2);
     free_mat(in1);
@@ -260,7 +262,7 @@ int main(int argc, char *argv[])
     struct buffer *item2 = get_item(buffer->buffer, 1);
     if (!item1 || !item2)
     {
-      fprintf(stderr, "Invalid input format.\n");
+      fprintf(stderr, "Invalid input format.");
       return 3;
     }
     struct mat *in1 = deserialize_mat(item1->buffer);
@@ -268,11 +270,11 @@ int main(int argc, char *argv[])
     struct mat *out = sub_mat(in1, in2);
     if (!out)
     {
-      fprintf(stderr, "Function error.\n");
+      fprintf(stderr, "Function error.");
       return 5;
     }
     char *res = serialize_mat(out);
-    printf("%s\n", res);
+    printf("%s", res);
     free_buffer(item1);
     free_buffer(item2);
     free_mat(in1);
@@ -287,7 +289,7 @@ int main(int argc, char *argv[])
     struct buffer *item2 = get_item(buffer->buffer, 1);
     if (!item1 || !item2)
     {
-      fprintf(stderr, "Invalid input format.\n");
+      fprintf(stderr, "Invalid input format.");
       return 3;
     }
     struct mat *in1 = deserialize_mat(item1->buffer);
@@ -296,10 +298,10 @@ int main(int argc, char *argv[])
     char *res = serialize_mat(in1);
     if (!res)
     {
-      fprintf(stderr, "Function error.\n");
+      fprintf(stderr, "Function error.");
       return 5;
     }
-    printf("%s\n", res);
+    printf("%s", res);
     free_buffer(item1);
     free_buffer(item2);
     free_mat(in1);
@@ -313,19 +315,46 @@ int main(int argc, char *argv[])
     struct buffer *item2 = get_item(buffer->buffer, 1);
     if (!item1 || !item2)
     {
-      fprintf(stderr, "Invalid input format.\n");
+      fprintf(stderr, "Invalid input format.");
       return 3;
     }
     struct mat *in1 = deserialize_mat(item1->buffer);
     struct mat *in2 = deserialize_mat(item2->buffer);
-    struct mat *out = mult_mat(in1, in2);
+    struct mat *out = mult_mat_naive(in1, in2);
     if (!out)
     {
-      fprintf(stderr, "Function error.\n");
+      fprintf(stderr, "Function error.");
       return 5;
     }
     char *res = serialize_mat(out);
-    printf("%s\n", res);
+    printf("%s", res);
+    free_buffer(item1);
+    free_buffer(item2);
+    free_mat(in1);
+    free_mat(in2);
+    free_mat(out);
+    free(res);
+  }
+  else if (!strcmp(argv[1], "mus"))
+  {
+    get_input(buffer);
+    struct buffer *item1 = get_item(buffer->buffer, 0);
+    struct buffer *item2 = get_item(buffer->buffer, 1);
+    if (!item1 || !item2)
+    {
+      fprintf(stderr, "Invalid input format.");
+      return 3;
+    }
+    struct mat *in1 = deserialize_mat(item1->buffer);
+    struct mat *in2 = deserialize_mat(item2->buffer);
+    struct mat *out = mult_mat_simd(in1, in2);
+    if (!out)
+    {
+      fprintf(stderr, "Function error.");
+      return 5;
+    }
+    char *res = serialize_mat(out);
+    printf("%s", res);
     free_buffer(item1);
     free_buffer(item2);
     free_mat(in1);
@@ -341,20 +370,49 @@ int main(int argc, char *argv[])
     struct buffer *item3 = get_item(buffer->buffer, 2);
     if (!item1 || !item2 || !item3)
     {
-      fprintf(stderr, "Invalid input format.\n");
+      fprintf(stderr, "Invalid input format.");
       return 3;
     }
     struct mat *in1 = deserialize_mat(item1->buffer);
     struct mat *in2 = deserialize_mat(item2->buffer);
     int nb_threads = atoi(item3->buffer);
-    struct mat *out = mult_mat_th(in1, in2, nb_threads);
+    struct mat *out = mult_mat_th_naive(in1, in2, nb_threads);
     if (!out)
     {
-      fprintf(stderr, "Function error.\n");
+      fprintf(stderr, "Function error.");
       return 5;
     }
     char *res = serialize_mat(out);
-    printf("%s\n", res);
+    printf("%s", res);
+    free_buffer(item1);
+    free_buffer(item2);
+    free_mat(in1);
+    free_mat(in2);
+    free_mat(out);
+    free(res);
+  }
+  else if (!strcmp(argv[1], "mts"))
+  {
+    get_input(buffer);
+    struct buffer *item1 = get_item(buffer->buffer, 0);
+    struct buffer *item2 = get_item(buffer->buffer, 1);
+    struct buffer *item3 = get_item(buffer->buffer, 2);
+    if (!item1 || !item2 || !item3)
+    {
+      fprintf(stderr, "Invalid input format.");
+      return 3;
+    }
+    struct mat *in1 = deserialize_mat(item1->buffer);
+    struct mat *in2 = deserialize_mat(item2->buffer);
+    int nb_threads = atoi(item3->buffer);
+    struct mat *out = mult_mat_th_simd(in1, in2, nb_threads);
+    if (!out)
+    {
+      fprintf(stderr, "Function error.");
+      return 5;
+    }
+    char *res = serialize_mat(out);
+    printf("%s", res);
     free_buffer(item1);
     free_buffer(item2);
     free_mat(in1);
@@ -371,7 +429,7 @@ int main(int argc, char *argv[])
     struct buffer *item4 = get_item(buffer->buffer, 3);
     if (!item1 || !item2 || !item3)
     {
-      fprintf(stderr, "Invalid input format.\n");
+      fprintf(stderr, "Invalid input format.");
       return 3;
     }
     struct mat *in1 = deserialize_mat(item1->buffer);
@@ -381,11 +439,11 @@ int main(int argc, char *argv[])
     struct mat *out = mult_mat_auto(in1, in2, nb_threads, threshold);
     if (!out)
     {
-      fprintf(stderr, "Function error.\n");
+      fprintf(stderr, "Function error.");
       return 5;
     }
     char *res = serialize_mat(out);
-    printf("%s\n", res);
+    printf("%s", res);
     free_buffer(item1);
     free_buffer(item2);
     free_mat(in1);
@@ -400,7 +458,7 @@ int main(int argc, char *argv[])
     struct buffer *item2 = get_item(buffer->buffer, 1);
     if (!item1 || !item2)
     {
-      fprintf(stderr, "Invalid input format.\n");
+      fprintf(stderr, "Invalid input format.");
       return 3;
     }
     struct mat *in1 = deserialize_mat(item1->buffer);
@@ -408,11 +466,11 @@ int main(int argc, char *argv[])
     struct mat *out = div_mat(in1, in2);
     if (!out)
     {
-      fprintf(stderr, "Function error.\n");
+      fprintf(stderr, "Function error.");
       return 5;
     }
     char *res = serialize_mat(out);
-    printf("%s\n", res);
+    printf("%s", res);
     free_buffer(item1);
     free_buffer(item2);
     free_mat(in1);
@@ -426,14 +484,14 @@ int main(int argc, char *argv[])
     struct buffer *item2 = get_item(buffer->buffer, 1);
     if (!item1 || !item2)
     {
-      fprintf(stderr, "Invalid input format.\n");
+      fprintf(stderr, "Invalid input format.");
       return 3;
     }
     struct mat *in1 = deserialize_mat(item1->buffer);
     float in2 = atof(item2->buffer);
     div_mat_ip(in1, in2);
     char *res = serialize_mat(in1);
-    printf("%s\n", res);
+    printf("%s", res);
     free_buffer(item1);
     free_buffer(item2);
     free_mat(in1);
@@ -446,7 +504,7 @@ int main(int argc, char *argv[])
     struct buffer *item2 = get_item(buffer->buffer, 1);
     if (!item1 || !item2)
     {
-      fprintf(stderr, "Invalid input format.\n");
+      fprintf(stderr, "Invalid input format.");
       return 3;
     }
     struct mat *in1 = deserialize_mat(item1->buffer);
@@ -454,11 +512,11 @@ int main(int argc, char *argv[])
     struct mat *out = sc_mult_mat(in1, in2);
     if (!out)
     {
-      fprintf(stderr, "Function error.\n");
+      fprintf(stderr, "Function error.");
       return 5;
     }
     char *res = serialize_mat(out);
-    printf("%s\n", res);
+    printf("%s", res);
     free_buffer(item1);
     free_buffer(item2);
     free_mat(in1);
@@ -471,18 +529,18 @@ int main(int argc, char *argv[])
     struct buffer *item1 = get_item(buffer->buffer, 0);
     if (!item1)
     {
-      fprintf(stderr, "Invalid input format.\n");
+      fprintf(stderr, "Invalid input format.");
       return 3;
     }
     struct mat *in1 = deserialize_mat(item1->buffer);
     struct mat *out = trans_mat(in1);
     if (!out)
     {
-      fprintf(stderr, "Function error.\n");
+      fprintf(stderr, "Function error.");
       return 5;
     }
     char *res = serialize_mat(out);
-    printf("%s\n", res);
+    printf("%s", res);
     free_buffer(item1);
     free_mat(in1);
     free_mat(out);
@@ -490,7 +548,7 @@ int main(int argc, char *argv[])
   }
   else
   {
-    printf("Invalide command.\n");
+    printf("Invalide command.");
     return 4;
   }
   free_buffer(buffer);

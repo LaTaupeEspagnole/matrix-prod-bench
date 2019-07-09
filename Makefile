@@ -1,5 +1,6 @@
 CC= gcc
-CFLAGS= -std=c99 -Wall -Wextra -Werror -pedantic -Iincludes
+CFLAGS= -std=c99 -Wall -Wextra -Werror -pedantic -Iincludes -mavx
+# CFLAGS+= -fopt-info-all -fopt-info-loop # Control loop vectorization
 LDFLAGS= -L. -lpthread -lm -lmatrix
 
 VPATH= src tests
@@ -9,6 +10,7 @@ LIB= libmatrix.a
 OBJS_CHK= check.o
 OBJS_BCH= bench.o
 OBJS_TST= test.o
+OBJS_DEV= dev.o
 
 .PHONY: clean clean_lib clean_chk clean_bch clean_tst
 
@@ -35,6 +37,11 @@ bench_opti: bench
 test-suite: test
 test-suite:
 	tests/test-suite.py tests/json-tests/ ./test
+dev: $(LIB) $(OBJS_DEV)
+dev_opti: CFLAGS += -O3
+dev_opti: dev
+dev_debug: CFLAGS += -g
+dev_debug: dev
 
 $(LIB): $(OBJS_LIB)
 	ar r $@ $^
@@ -42,7 +49,7 @@ $(LIB): $(OBJS_LIB)
 
 # --- Cleanng targets ---
 
-clean: clean_lib clean_chk clean_bch clean_tst clean_py
+clean: clean_lib clean_chk clean_bch clean_tst clean_py clean_dev
 clean_bch:
 	$(RM) $(OBJS_BCH)
 	$(RM) bench
@@ -55,6 +62,9 @@ clean_chk:
 clean_tst:
 	$(RM) $(OBJS_TST)
 	$(RM) test
+clean_dev:
+	$(RM) $(OBJS_DEV)
+	$(RM) dev
 
 clean_py:
 	$(RM) -r tests/__pycache__

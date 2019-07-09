@@ -19,10 +19,8 @@ def exec_commande_line(cmd_line, cmd_timeout, cmd_input):
     timeout_flag = 1
 
   exit_code = prosses.wait()
-  out = str(out)
-  err = str(err)
-  out = out[2:len(out) - 1]
-  err = err[2:len(err) - 1]
+  out = out.decode()
+  err = err.decode()
   exit_code = int(exit_code)
   return (cmd_input, out, err, exit_code, timeout_flag)
 
@@ -68,9 +66,18 @@ def show_diff(cmd_input, out, err, exit_code, cmd_line, test_obj):
   print("     Description     : " + test_obj['test_description'])
   print("     Commande line   : " + str(cmd_line))
   if cmd_input != None:
-    print("     stdin           : \"" + cmd_input + "\"")
-  print("     stdout result   : \"" + str(out) + "\"")
-  print("     stdout expected : \"" + test_obj['expected_stdout'], end='')
+    if len(cmd_input) > 500:
+      print("     stdin           : \"" + cmd_input[0:100] + " ... " + cmd_input[-100:] + "\"")
+    else:
+      print("     stdin           : \"" + cmd_input + "\"")
+  if len(out) > 500:
+    print("     stdout result   : \"" + out[0:100] + " ... " + out[-100:] + "\"")
+  else:
+    print("     stdout result   : \"" + out + "\"")
+  if len(test_obj['expected_stdout']) > 500:
+    print("     stdout expected : \"" + test_obj['expected_stdout'][0:100] + " ... " + test_obj['expected_stdout'][-100:], end='')
+  else:
+    print("     stdout expected : \"" + test_obj['expected_stdout'], end='')
   if test_obj['exact_stdout'] == "true":
     print("\" (exact output)")
   else:

@@ -1,0 +1,13 @@
+{
+  "test_type": "simple",
+  "stdin": "M2:2:42:43:44:45:;M2:2:24:12:9:2:;4:",
+  "command": "mts",
+  "expected_stdout": "M2:2:1395.000000:590.000000:1461.000000:618.000000:",
+  "expected_stderr": "",
+  "expected_exitstatus": "0",
+  "exact_stdout": "false",
+  "exact_stderr": "true",
+  "test_name": "Mul thr 2x2",
+  "test_description": "Multiplication threaded of two 2x2 matrices",
+  "test_timeout": "0"
+}

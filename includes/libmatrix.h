@@ -36,6 +36,9 @@ struct mat *copy_mat(struct mat *m);
 /* Checks if matrix a and b are equal */
 int is_equal(struct mat *a, struct mat *b);
 
+/* Checks if matrix a and b are equal withing a threshold */
+int is_equal_threshold(struct mat *a, struct mat *b, float threshold);
+
 /* Prints mat a */
 void print_mat(struct mat *a);
 
@@ -59,13 +62,29 @@ void sub_mat_ip(struct mat *a, struct mat *b);
 
 /*
 ** Multiplies matrix a and b, stors the result in a new
-** matrix and returns it's pointer.
+** matrix and returns it's pointer using the naive algorithm.
 */
-struct mat *mult_mat(const struct mat *a, const struct mat *b);
+struct mat *mult_mat_naive(const struct mat *a, const struct mat *b);
 
-/* Same as mult_mat() but using nb_threads threads */
-struct mat *mult_mat_th(const struct mat *a, const struct mat *b,
-                        const size_t nb_threads);
+/*
+** Multiplies matrix a and b, stors the result in a new
+** matrix and returns it's pointer using SIMD intructions.
+*/
+struct mat *mult_mat_simd(const struct mat *a, const struct mat *b);
+
+/*
+** Same as mult_mat_naive() but using nb_threads threads.
+*/
+struct mat *mult_mat_th_naive(const struct mat *a,
+                              const struct mat *b,
+                              const size_t nb_threads);
+
+/*
+** Same as mult_mat_simd() but using nb_threads threads.
+*/
+struct mat *mult_mat_th_simd(const struct mat *a,
+                             const struct mat *b,
+                             const size_t nb_threads);
 
 /*
 ** Same as mult_mat() if
@@ -98,9 +117,15 @@ void sc_mult_mat_ip(struct mat *a, float m);
 struct mat *trans_mat(struct mat *a);
 
 /* Serialize a matrix into a string */
-char *serialize_mat(struct mat *a);
+char* serialize_matrix(struct mat* matrix);
 
 /* Deserialize a string into a matrix */
+struct mat* deserialize_matrix(char* str, char** new_pos);
+
+/* Serialize a matrix into a string (deprecate) */
+char *serialize_mat(struct mat *a);
+
+/* Deserialize a string into a matrix (deprecate) */
 struct mat *deserialize_mat(char *str);
 
 #endif /* !LIBMATRIX_H */

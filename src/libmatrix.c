@@ -75,6 +75,18 @@ int is_equal(struct mat *a, struct mat *b)
   return i == size;
 }
 
+int is_equal_threshold(struct mat *a, struct mat *b, float threshold)
+{
+  if (!a || !b || (a->width != b->width) || (a->height != b->height))
+    return 0;
+
+  size_t size = a->width * a->height;
+  size_t i = 0;
+  while (i < size && (fabsf(a->array[i] - b->array[i]) <= threshold))
+    ++i;
+  return i == size;
+}
+
 void print_mat(struct mat *a)
 {
   if (!a)
