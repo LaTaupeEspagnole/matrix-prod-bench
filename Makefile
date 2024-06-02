@@ -37,6 +37,8 @@ bench_opti: bench
 test-suite: test
 test-suite:
 	tests/test-suite.py tests/json-tests/ ./test
+test-suite-control:
+	tests/test-suite.py tests/json-tests/ ./numpy-test.py
 dev: $(LIB) $(OBJS_DEV)
 dev_opti: CFLAGS += -O3
 dev_opti: dev

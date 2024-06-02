@@ -60,21 +60,22 @@ def pretty_print_test_res(stat_stdout, stat_stderr, stat_exit, test_name):
   print(" - " + test_name)
 
 def show_diff(cmd_input, out, err, exit_code, cmd_line, test_obj):
+  max_output_size = 500
   cmd_input = str(cmd_input)
   cmd_input = cmd_input[2:len(cmd_input) - 1]
   print("   Error in test : " + test_obj['test_name'])
   print("     Description     : " + test_obj['test_description'])
   print("     Commande line   : " + str(cmd_line))
   if cmd_input != None:
-    if len(cmd_input) > 500:
+    if len(cmd_input) > max_output_size:
       print("     stdin           : \"" + cmd_input[0:100] + " ... " + cmd_input[-100:] + "\"")
     else:
       print("     stdin           : \"" + cmd_input + "\"")
-  if len(out) > 500:
+  if len(out) > max_output_size:
     print("     stdout result   : \"" + out[0:100] + " ... " + out[-100:] + "\"")
   else:
     print("     stdout result   : \"" + out + "\"")
-  if len(test_obj['expected_stdout']) > 500:
+  if len(test_obj['expected_stdout']) > max_output_size:
     print("     stdout expected : \"" + test_obj['expected_stdout'][0:100] + " ... " + test_obj['expected_stdout'][-100:], end='')
   else:
     print("     stdout expected : \"" + test_obj['expected_stdout'], end='')

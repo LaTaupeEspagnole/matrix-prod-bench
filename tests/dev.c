@@ -55,6 +55,9 @@ int main(int argc, char *argv[])
     printf("Processing naive...\n");
     res = mult_mat_naive(a, b);
   }
+  print_mat(a);
+  print_mat(b);
+  print_mat(res);
 /*
   printf("Comparing patrices...\n");
   if (!is_equal_threshold(res_simd, res_naive, 0.1f))

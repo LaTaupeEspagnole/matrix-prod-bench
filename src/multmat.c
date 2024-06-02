@@ -61,9 +61,9 @@ static inline void comput_case_simd(const struct mat *a,
   const size_t limit = (a->width / 8) * 8;
   const size_t widthA = a->width;
   const size_t widthB = b->width;
-  float tmpRes = 0;
+  float tmpRes = 0.0f;
+  __attribute__ ((aligned (32))) float matA[8], matB[8], resVals[8];
   for (size_t i = 0; i < limit; i += 8) {
-    float matA[8] __attribute__((aligned (32)));
     matA[0] = a->array[i + lin * widthA]; //get_val_mat(a, lin, i);
     matA[1] = a->array[i + 1 + lin * widthA]; //get_val_mat(a, lin, i + 1);
     matA[2] = a->array[i + 2 + lin * widthA]; //get_val_mat(a, lin, i + 2);
@@ -72,20 +72,19 @@ static inline void comput_case_simd(const struct mat *a,
     matA[5] = a->array[i + 5 + lin * widthA]; //get_val_mat(a, lin, i + 5);
     matA[6] = a->array[i + 6 + lin * widthA]; //get_val_mat(a, lin, i + 6);
     matA[7] = a->array[i + 7 + lin * widthA]; //get_val_mat(a, lin, i + 7);
-    float matB[8] __attribute__((aligned (32)));
+
     matB[0] = b->array[col + i * widthB]; //get_val_mat(b, i, col);
-    matB[1] = b->array[col + i + 1 * widthB]; //get_val_mat(b, i + 1, col);
-    matB[2] = b->array[col + i + 2 * widthB]; //get_val_mat(b, i + 2, col);
-    matB[3] = b->array[col + i + 3 * widthB]; //get_val_mat(b, i + 3, col);
-    matB[4] = b->array[col + i + 4 * widthB]; //get_val_mat(b, i + 4, col);
-    matB[5] = b->array[col + i + 5 * widthB]; //get_val_mat(b, i + 5, col);
-    matB[6] = b->array[col + i + 6 * widthB]; //get_val_mat(b, i + 6, col);
-    matB[7] = b->array[col + i + 7 * widthB]; //get_val_mat(b, i + 7, col);
+    matB[1] = b->array[col + (i + 1) * widthB]; //get_val_mat(b, i + 1, col);
+    matB[2] = b->array[col + (i + 2) * widthB]; //get_val_mat(b, i + 2, col);
+    matB[3] = b->array[col + (i + 3) * widthB]; //get_val_mat(b, i + 3, col);
+    matB[4] = b->array[col + (i + 4) * widthB]; //get_val_mat(b, i + 4, col);
+    matB[5] = b->array[col + (i + 5) * widthB]; //get_val_mat(b, i + 5, col);
+    matB[6] = b->array[col + (i + 6) * widthB]; //get_val_mat(b, i + 6, col);
+    matB[7] = b->array[col + (i + 7) * widthB]; //get_val_mat(b, i + 7, col);
 
     __m256 vect_matA = _mm256_load_ps(matA);
     __m256 vect_matB = _mm256_load_ps(matB);
     __m256 vect_res  = _mm256_mul_ps(vect_matA, vect_matB);
-    float resVals[8] __attribute__((aligned (32)));
     _mm256_store_ps(resVals, vect_res);
     tmpRes += resVals[0] + resVals[1] + resVals[2] + resVals[3]
               + resVals[4] + resVals[5] + resVals[6] + resVals[7];
@@ -94,7 +93,7 @@ static inline void comput_case_simd(const struct mat *a,
   for (size_t i = limit; i < a->width; i++)
     tmpRes += get_val_mat(a, lin, i) * get_val_mat(b, i, col);
 
-  add_val_mat(res, lin, col, tmpRes);
+  set_val_mat(res, lin, col, tmpRes);
 }
 
 static void mult_mat_inter(const struct mat *a,
@@ -243,8 +242,8 @@ struct mat *mult_mat_th_naive(const struct mat *a,
 }
 
 struct mat *mult_mat_th_simd(const struct mat *a,
-                              const struct mat *b,
-                              const size_t nb_threads)
+                             const struct mat *b,
+                             const size_t nb_threads)
 {
   return mult_mat_th(a, b, nb_threads, comput_case_simd);
 }
@@ -264,3 +263,4 @@ struct mat *mult_mat_auto(struct mat *a, struct mat *b,
     return mult_mat_naive(a, b);
   return mult_mat_th_naive(a, b, nb_threads);
 }
+

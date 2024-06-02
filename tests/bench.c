@@ -21,6 +21,8 @@ int main(int argc, char *argv[])
     return 0;
   }
 
+  clock_t begin = clock();
+
   srand(time(NULL));
   size_t size_mat = atoi(argv[1]);
   size_t nb_threads = atoi(argv[2]);
@@ -28,7 +30,17 @@ int main(int argc, char *argv[])
   struct mat *b = init_mat(size_mat, size_mat);
   init_random(a);
   init_random(b);
-  struct mat *res = mult_mat_th(a, b, nb_threads);
+
+  clock_t end = clock();
+  printf("Random generation time : %f\n", (double)(end - begin) / CLOCKS_PER_SEC);
+
+  clock_t begin_process = clock();
+//  struct mat *res = mult_mat_th_simd(a, b, nb_threads);
+  struct mat *res = mult_mat_th_naive(a, b, nb_threads);
+  clock_t end_process = clock();
+
+  printf("Compute time : %f\n", (double)(end_process - begin_process) / CLOCKS_PER_SEC);
+
   free_mat(a);
   free_mat(b);
   free_mat(res);

@@ -1,6 +1,6 @@
 {
   "test_type": "simple",
-  "stdin": "M1:1:42.123456:12.234512:;M1:1:24.654321:1.230987:;",
+  "stdin": "M1:2:42.123456:12.234512:;M1:2:24.654321:1.230987:;",
   "command": "ieq",
   "expected_stdout": "False",
   "expected_stderr": "",
