@@ -67,6 +67,11 @@ algorithm for the product. All main operations are implemented in the library.
     then deserialize it. It will then compare the equality of the two matrices.
 
 
+----- SOURCES -----
+
+  * https://learn.microsoft.com/en-us/cpp/intrinsics/x86-intrinsics-list
+
+
 ----- AUTHORS -----
 
   Sébastien GOUBEAU (sebastiengou@outlook.fr)
