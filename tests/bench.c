@@ -1,3 +1,4 @@
+#define _XOPEN_SOURCE 600
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -21,7 +22,10 @@ int main(int argc, char *argv[])
     return 0;
   }
 
-  clock_t begin = clock();
+  struct timespec start, finish;
+  double elapsed;
+
+  clock_gettime(CLOCK_MONOTONIC, &start);
 
   srand(time(NULL));
   size_t size_mat = atoi(argv[1]);
@@ -31,15 +35,19 @@ int main(int argc, char *argv[])
   init_random(a);
   init_random(b);
 
-  clock_t end = clock();
-  printf("Random generation time : %f\n", (double)(end - begin) / CLOCKS_PER_SEC);
+  clock_gettime(CLOCK_MONOTONIC, &finish);
+  elapsed = (finish.tv_sec - start.tv_sec);
+  elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+  printf("Random generation time : %f\n", (double)elapsed);
 
-  clock_t begin_process = clock();
+  clock_gettime(CLOCK_MONOTONIC, &start);
 //  struct mat *res = mult_mat_th_simd(a, b, nb_threads);
   struct mat *res = mult_mat_th_naive(a, b, nb_threads);
-  clock_t end_process = clock();
 
-  printf("Compute time : %f\n", (double)(end_process - begin_process) / CLOCKS_PER_SEC);
+  clock_gettime(CLOCK_MONOTONIC, &finish);
+  elapsed = (finish.tv_sec - start.tv_sec);
+  elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+  printf("Compute time : %f\n", (double)elapsed);
 
   free_mat(a);
   free_mat(b);

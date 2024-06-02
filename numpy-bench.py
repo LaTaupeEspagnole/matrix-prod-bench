@@ -5,12 +5,17 @@ import random
 import sys
 import time
 
+from os import environ
+
 start = time.process_time()
 
 A = []
 B = []
 
 mat_size = int(sys.argv[1])
+nb_threads = sys.argv[2]
+
+environ['OMP_NUM_THREADS'] = nb_threads
 
 for i in range(0, mat_size):
     tmpA = []
