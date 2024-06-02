@@ -1,5 +1,5 @@
 CC= gcc
-CFLAGS= -std=c99 -Wall -Wextra -Werror -pedantic -Iincludes -mavx
+CFLAGS= -std=c99 -Wall -Wextra -Werror -pedantic -Iincludes -mavx -mavx2 -mfma
 # CFLAGS+= -fopt-info-all -fopt-info-loop # Control loop vectorization
 LDFLAGS= -L. -lpthread -lm -lmatrix
 

@@ -58,37 +58,41 @@ static inline void comput_case_simd(const struct mat *a,
                                     const size_t lin,
                                     const size_t col)
 {
-  const size_t limit = (a->width / 8) * 8;
   const size_t widthA = a->width;
   const size_t widthB = b->width;
-  float tmpRes = 0.0f;
-  __attribute__ ((aligned (32))) float matA[8], matB[8], resVals[8];
-  for (size_t i = 0; i < limit; i += 8) {
-    matA[0] = a->array[i + lin * widthA]; //get_val_mat(a, lin, i);
-    matA[1] = a->array[i + 1 + lin * widthA]; //get_val_mat(a, lin, i + 1);
-    matA[2] = a->array[i + 2 + lin * widthA]; //get_val_mat(a, lin, i + 2);
-    matA[3] = a->array[i + 3 + lin * widthA]; //get_val_mat(a, lin, i + 3);
-    matA[4] = a->array[i + 4 + lin * widthA]; //get_val_mat(a, lin, i + 4);
-    matA[5] = a->array[i + 5 + lin * widthA]; //get_val_mat(a, lin, i + 5);
-    matA[6] = a->array[i + 6 + lin * widthA]; //get_val_mat(a, lin, i + 6);
-    matA[7] = a->array[i + 7 + lin * widthA]; //get_val_mat(a, lin, i + 7);
+  const size_t limit = (widthA >> 3) << 3;
+  const size_t lin_X_widthA = lin * widthA;
 
-    matB[0] = b->array[col + i * widthB]; //get_val_mat(b, i, col);
-    matB[1] = b->array[col + (i + 1) * widthB]; //get_val_mat(b, i + 1, col);
-    matB[2] = b->array[col + (i + 2) * widthB]; //get_val_mat(b, i + 2, col);
-    matB[3] = b->array[col + (i + 3) * widthB]; //get_val_mat(b, i + 3, col);
-    matB[4] = b->array[col + (i + 4) * widthB]; //get_val_mat(b, i + 4, col);
-    matB[5] = b->array[col + (i + 5) * widthB]; //get_val_mat(b, i + 5, col);
-    matB[6] = b->array[col + (i + 6) * widthB]; //get_val_mat(b, i + 6, col);
-    matB[7] = b->array[col + (i + 7) * widthB]; //get_val_mat(b, i + 7, col);
+  __attribute__ ((aligned (32))) float matA[8], matB[8], resVals[8];
+  __m256 resSum = _mm256_set_ps(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+
+  for (size_t i = 0; i < limit; i += 8) {
+    matA[0] = a->array[i + lin_X_widthA];
+    matA[1] = a->array[i + 1 + lin_X_widthA];
+    matA[2] = a->array[i + 2 + lin_X_widthA];
+    matA[3] = a->array[i + 3 + lin_X_widthA];
+    matA[4] = a->array[i + 4 + lin_X_widthA];
+    matA[5] = a->array[i + 5 + lin_X_widthA];
+    matA[6] = a->array[i + 6 + lin_X_widthA];
+    matA[7] = a->array[i + 7 + lin_X_widthA];
+
+    matB[0] = b->array[col + i * widthB];
+    matB[1] = b->array[col + (i + 1) * widthB];
+    matB[2] = b->array[col + (i + 2) * widthB];
+    matB[3] = b->array[col + (i + 3) * widthB];
+    matB[4] = b->array[col + (i + 4) * widthB];
+    matB[5] = b->array[col + (i + 5) * widthB];
+    matB[6] = b->array[col + (i + 6) * widthB];
+    matB[7] = b->array[col + (i + 7) * widthB];
 
     __m256 vect_matA = _mm256_load_ps(matA);
     __m256 vect_matB = _mm256_load_ps(matB);
-    __m256 vect_res  = _mm256_mul_ps(vect_matA, vect_matB);
-    _mm256_store_ps(resVals, vect_res);
-    tmpRes += resVals[0] + resVals[1] + resVals[2] + resVals[3]
-              + resVals[4] + resVals[5] + resVals[6] + resVals[7];
+    resSum = _mm256_fmadd_ps(vect_matA, vect_matB, resSum);
   }
+
+  __m256 tmp = _mm256_hadd_ps(resSum, resSum);
+  _mm256_store_ps(resVals, tmp);
+  float tmpRes = resVals[0] + resVals[1] + resVals[4] + resVals[5];
 
   for (size_t i = limit; i < a->width; i++)
     tmpRes += get_val_mat(a, lin, i) * get_val_mat(b, i, col);
@@ -106,10 +110,10 @@ static void mult_mat_inter(const struct mat *a,
                                                     const size_t lin,
                                                     const size_t col))
 {
-  size_t start_lin = inter.begin / res->width;
-  size_t start_col = inter.begin % res->width;
-  size_t end_lin = inter.end / res->width;
-  size_t end_col = inter.end % res->width;
+  const size_t start_lin = inter.begin / res->width;
+  const size_t start_col = inter.begin % res->width;
+  const size_t end_lin = inter.end / res->width;
+  const size_t end_col = inter.end % res->width;
 
   if (start_lin == end_lin)
   {
@@ -134,7 +138,7 @@ static void mult_mat_inter(const struct mat *a,
     (*comput_case_func)(a, b, res, end_lin, c);
 }
 
-struct mat *mult_mat(const struct mat *a,
+static inline struct mat *mult_mat(const struct mat *a,
                      const struct mat *b,
                      void (*comput_case_func)(const struct mat *a,
                                               const struct mat *b,
