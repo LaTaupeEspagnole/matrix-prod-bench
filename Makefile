@@ -1,6 +1,6 @@
 CC= gcc
 CFLAGS= -std=c11 -Wall -Wextra -Werror -pedantic -Iincludes -mavx -mavx2 -mfma
-# CFLAGS+= -fopt-info-all -fopt-info-loop # Control loop vectorization
+CFLAGS+= -fopt-info-all -fopt-info-loop # Control loop vectorization
 LDFLAGS= -L. -lpthread -lm -lmatrix
 
 VPATH= src tests
@@ -19,6 +19,7 @@ OBJS_DEV= dev.o
 
 lib: $(LIB)
 check: $(LIB) $(OBJS_CHK)
+bench: CFLAGS += -O3
 bench: $(LIB) $(OBJS_BCH)
 test: CFLAGS += -O3
 test: $(LIB)
@@ -32,8 +33,6 @@ chk_debug: $(LIB)
 chk_debug: check
 check_opti: CFLAGS += -O3
 check_opti: check
-bench_opti: CFLAGS += -O3
-bench_opti: bench
 test-suite: test
 test-suite:
 	tests/test-suite.py tests/json-tests/ ./test

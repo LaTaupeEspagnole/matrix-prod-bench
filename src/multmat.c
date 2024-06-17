@@ -61,7 +61,7 @@ static inline void comput_case_simd(const struct mat *a,
                                     const size_t col)
 {
   const size_t widthA = a->width;
-  const size_t limit = (widthA >> 3) << 3;
+  const size_t limit = (a->width / 8) * 8;
   const size_t lin_X_widthA = lin * widthA;
   const size_t col_X_heightB = col * b->height;
 
