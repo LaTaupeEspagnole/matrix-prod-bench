@@ -12,6 +12,11 @@ void init_random(struct mat *a)
   {
     a->array[i] = (float)(rand() % 1000) / 100;
   }
+  for (unsigned lin = 0; lin < a->height; ++lin)
+  {
+    for (unsigned col = 0; col < a->width; ++col)
+      a->array_mirrored[lin + col * a->height] = a->array[col + lin * a->width];
+  }
 }
 
 int main(int argc, char *argv[])
@@ -33,11 +38,14 @@ int main(int argc, char *argv[])
   printf("Initiation of the matrices...\n");
   struct mat *a = init_mat(size_mat, size_mat);
   struct mat *b = init_mat(size_mat, size_mat);
+  struct mat *resRef = NULL;
   struct mat *res = NULL;
 
   printf("Setting random values in the matrices...\n");
   init_random(a);
   init_random(b);
+
+  resRef = mult_mat_naive(a, b);
 
   if (strcmp(argv[1], "mul_th_simd") == 0) {
     printf("Processing threaded SIMD...\n");
@@ -55,16 +63,21 @@ int main(int argc, char *argv[])
     printf("Processing naive...\n");
     res = mult_mat_naive(a, b);
   }
+  printf("A =\n");
   print_mat(a);
+  printf("B =\n");
   print_mat(b);
+  printf("resRef =\n");
+  print_mat(resRef);
+  printf("res =\n");
   print_mat(res);
-/*
+
   printf("Comparing patrices...\n");
-  if (!is_equal_threshold(res_simd, res_naive, 0.1f))
+  if (!is_equal_threshold(resRef, res, 0.1f))
     printf("> Matrices not equal.\n");
   else
     printf("> Matrices are equal.\n");
-*/
+
 /*
   print_mat(res_naive);
   printf("\n");
@@ -75,6 +88,8 @@ int main(int argc, char *argv[])
   free_mat(b);
   if (res)
     free_mat(res);
+  if (resRef)
+    free_mat(resRef);
 
   return 0;
 }

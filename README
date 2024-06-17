@@ -66,6 +66,20 @@ algorithm for the product. All main operations are implemented in the library.
     then deserialize it. It will then compare the equality of the two matrices.
 
 
+----- BENCHMARKS -----
+
+  Command used to bench :           ./bench 3000 16
+  Command using numpy to compare :  ./numpy-bench.py 3000 16
+
+                 +----------------------------+-------------+
+                 |        Compute time        | Improvement |
+  +--------------+-------------+--------------+-------------+
+  | After commit | libmatrix.a |  Numpy (ref) |      /      |
+  +--------------+-------------+--------------+-------------+
+  | 020d512      |    7.177259 |     1.586984 |             |
+  +--------------+-------------+--------------+-------------+
+
+
 ----- SOURCES -----
 
   - https://learn.microsoft.com/en-us/cpp/intrinsics/x86-intrinsics-list

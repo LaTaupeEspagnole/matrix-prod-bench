@@ -15,9 +15,16 @@ struct mat *dec_mat(size_t width, size_t height)
 
   res->width = width;
   res->height = height;
-  res->array = malloc(width * height * sizeof (float));
+  res->array = aligned_alloc(32, width * height * sizeof (float));
   if (!res->array)
   {
+    free(res);
+    return NULL;
+  }
+  res->array_mirrored = aligned_alloc(32, width * height * sizeof (float));
+  if (!res->array_mirrored)
+  {
+    free(res->array);
     free(res);
     return NULL;
   }
@@ -34,6 +41,7 @@ struct mat *init_mat(size_t width, size_t height)
   for (size_t i = 0; i < size; ++i)
   {
     res->array[i] = 0.0f;
+    res->array_mirrored[i] = 0.0f;
   }
   return res;
 }
@@ -44,6 +52,7 @@ void free_mat(struct mat *m)
     return;
 
   free(m->array);
+  free(m->array_mirrored);
   free(m);
 }
 
@@ -58,7 +67,10 @@ struct mat *copy_mat(struct mat *m)
 
   size_t prod = m->width * m->height;
   for (size_t i = 0; i < prod; ++i)
+  {
     res->array[i] = m->array[i];
+    res->array_mirrored[i] = m->array_mirrored[i];
+  }
 
   return res;
 }
@@ -122,7 +134,10 @@ static struct mat *add_sub_mat(struct mat *a, struct mat *b, int mult)
 
   size_t prod = a->width * a->height;
   for (size_t i = 0; i < prod; ++i)
+  {
     res->array[i] = a->array[i] + (mult * b->array[i]);
+    res->array_mirrored[i] = a->array_mirrored[i] + (mult * b->array_mirrored[i]);
+  }
 
   return res;
 }
@@ -144,7 +159,10 @@ static void add_sub_mat_ip(struct mat *a, struct mat *b, int mult)
 
   size_t prod = a->width * a->height;
   for (size_t i = 0; i < prod; ++i)
+  {
     a->array[i] = a->array[i] + (mult * b->array[i]);
+    a->array_mirrored[i] = a->array_mirrored[i] + (mult * b->array_mirrored[i]);
+  }
 }
 
 void add_mat_ip(struct mat *a, struct mat *b)
@@ -168,7 +186,10 @@ struct mat *div_mat(struct mat *a, float d)
 
   size_t prod = a->width * a->height;
   for (size_t i = 0; i < prod; ++i)
+  {
     res->array[i] = a->array[i] / d;
+    res->array_mirrored[i] = a->array_mirrored[i] / d;
+  }
 
   return res;
 }
@@ -184,7 +205,10 @@ struct mat *sc_mult_mat(struct mat *a, float m)
 
   size_t prod = a->width * a->height;
   for (size_t i = 0; i < prod; ++i)
+  {
     res->array[i] = a->array[i] * m;
+    res->array_mirrored[i] = a->array_mirrored[i] * m;
+  }
 
   return res;
 }
@@ -196,7 +220,10 @@ void div_mat_ip(struct mat *a, float d)
 
   size_t prod = a->width * a->height;
   for (size_t i = 0; i < prod; ++i)
+  {
     a->array[i] = a->array[i] / d;
+    a->array_mirrored[i] = a->array_mirrored[i] / d;
+  }
 }
 
 void sc_mult_mat_ip(struct mat *a, float m)
@@ -206,7 +233,10 @@ void sc_mult_mat_ip(struct mat *a, float m)
 
   size_t prod = a->width * a->height;
   for (size_t i = 0; i < prod; ++i)
+  {
     a->array[i] = a->array[i] * m;
+    a->array_mirrored[i] = a->array_mirrored[i] * m;
+  }
 }
 
 struct mat *trans_mat(struct mat *a)
@@ -218,12 +248,11 @@ struct mat *trans_mat(struct mat *a)
   if (!res)
     return NULL;
 
-  for (size_t c = 0; c < a->width; ++c)
+  size_t prod = a->width * a->height;
+  for (size_t i = 0; i < prod; ++i)
   {
-    for (size_t l = 0; l < a->height; ++l)
-    {
-      res->array[l + res->width * c] = a->array[c + a->width * l];
-    }
+    res->array[i] = a->array_mirrored[i];
+    res->array_mirrored[i] = a->array[i];
   }
 
   return res;

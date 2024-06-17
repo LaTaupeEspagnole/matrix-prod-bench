@@ -60,6 +60,12 @@ struct mat* deserialize_matrix(char* str, char** new_pos)
   }
   *new_pos = str;
 
+  for (unsigned lin = 0; lin < matrix->height; ++lin)
+  {
+    for (unsigned col = 0; col < matrix->width; ++col)
+      matrix->array_mirrored[lin + col * matrix->height] = matrix->array[col + lin * matrix->width];
+  }
+
   return matrix;
 }
 
@@ -122,6 +128,12 @@ struct mat *deserialize_mat(char *str)
   {
     sscanf(str + padding, "%f:", res->array + i);
     padding += get_padding(str + padding, 1);
+  }
+
+  for (unsigned lin = 0; lin < res->height; ++lin)
+  {
+    for (unsigned col = 0; col < res->width; ++col)
+      res->array_mirrored[lin + col * res->height] = res->array[col + lin * res->width];
   }
 
   return res;

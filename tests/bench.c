@@ -41,8 +41,8 @@ int main(int argc, char *argv[])
   printf("Random generation time : %f\n", (double)elapsed);
 
   clock_gettime(CLOCK_MONOTONIC, &start);
-//  struct mat *res = mult_mat_th_simd(a, b, nb_threads);
-  struct mat *res = mult_mat_th_naive(a, b, nb_threads);
+  struct mat *res = mult_mat_th_simd(a, b, nb_threads);
+  //struct mat *res = mult_mat_th_naive(a, b, nb_threads);
 
   clock_gettime(CLOCK_MONOTONIC, &finish);
   elapsed = (finish.tv_sec - start.tv_sec);

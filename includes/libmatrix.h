@@ -8,6 +8,7 @@ struct mat
   size_t width;
   size_t height;
   float *array;
+  float *array_mirrored;
 };
 
 /*

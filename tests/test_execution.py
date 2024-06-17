@@ -60,7 +60,7 @@ def pretty_print_test_res(stat_stdout, stat_stderr, stat_exit, test_name):
   print(" - " + test_name)
 
 def show_diff(cmd_input, out, err, exit_code, cmd_line, test_obj):
-  max_output_size = 500
+  max_output_size = 2000
   cmd_input = str(cmd_input)
   cmd_input = cmd_input[2:len(cmd_input) - 1]
   print("   Error in test : " + test_obj['test_name'])
