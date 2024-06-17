@@ -65,28 +65,13 @@ static inline void comput_case_simd(const struct mat *a,
   const size_t lin_X_widthA = lin * widthA;
   const size_t col_X_heightB = col * b->height;
 
-  __attribute__ ((aligned (32))) float matA[8], matB[8];
-  __attribute__ ((aligned (32))) float resVals[8];
+  __attribute__ ((aligned (32))) float matA[8], matB[8], resVals[8];
   __m256 resSum = _mm256_set_ps(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 
   for (size_t i = 0; i < limit; i += 8) {
-    matA[0] = a->array[i + lin_X_widthA];
-    matA[1] = a->array[i + 1 + lin_X_widthA];
-    matA[2] = a->array[i + 2 + lin_X_widthA];
-    matA[3] = a->array[i + 3 + lin_X_widthA];
-    matA[4] = a->array[i + 4 + lin_X_widthA];
-    matA[5] = a->array[i + 5 + lin_X_widthA];
-    matA[6] = a->array[i + 6 + lin_X_widthA];
-    matA[7] = a->array[i + 7 + lin_X_widthA];
 
-    matB[0] = b->array_mirrored[i + col_X_heightB];
-    matB[1] = b->array_mirrored[i + 1 + col_X_heightB];
-    matB[2] = b->array_mirrored[i + 2 + col_X_heightB];
-    matB[3] = b->array_mirrored[i + 3 + col_X_heightB];
-    matB[4] = b->array_mirrored[i + 4 + col_X_heightB];
-    matB[5] = b->array_mirrored[i + 5 + col_X_heightB];
-    matB[6] = b->array_mirrored[i + 6 + col_X_heightB];
-    matB[7] = b->array_mirrored[i + 7 + col_X_heightB];
+    memcpy(matA, a->array + i + lin_X_widthA, 4 * 8);
+    memcpy(matB, b->array_mirrored + i + col_X_heightB, 4 * 8);
 
     __m256 vect_matA = _mm256_load_ps(matA);
     __m256 vect_matB = _mm256_load_ps(matB);
