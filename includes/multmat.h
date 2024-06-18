@@ -17,11 +17,10 @@ struct thread_info
   const struct mat *b;
   struct mat *res;
   struct inter inter;
-  void (*comput_case_func)(const struct mat *a,
+  float (*comput_case_func)(const struct mat *a,
                            const struct mat *b,
                            const struct mat *res,
-                           const size_t lin,
-                           const size_t col);
+                           const size_t pos);
 };
 
 #endif /* !MULTMAT_H */

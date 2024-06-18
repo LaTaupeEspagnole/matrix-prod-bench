@@ -69,16 +69,15 @@ algorithm for the product. All main operations are implemented in the library.
 ----- BENCHMARKS -----
 
   Command used to bench :           ./bench 3000 16
-  Command using numpy to compare :  ./numpy-bench.py 3000 16
+  Command using numpy to compare :  ./numpy-bench.py 3000 16 (ref: 1.586984)
 
-                 +----------------------------+-------------+
-                 |        Compute time        | Improvement |
-  +--------------+-------------+--------------+-------------+
-  | After commit | libmatrix.a |  Numpy (ref) |      /      |
-  +--------------+-------------+--------------+-------------+
-  | 4414957      |    3.046116 |     1.664454 |      x 2.35 |
-  | 020d512      |    7.177259 |     1.586984 |             |
-  +--------------+-------------+--------------+-------------+
+  +--------------+-------------+---------------+
+  | After commit | Compute time | Improvement  |
+  +--------------+--------------+--------------+
+  |    1311372   |     2.683686 |       x 1.13 |
+  |    4414957   |     3.046116 |       x 2.35 |
+  |    020d512   |     7.177259 |              |
+  +--------------+--------------+--------------+
 
 
 ----- SOURCES -----

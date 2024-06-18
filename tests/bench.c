@@ -10,7 +10,9 @@ void init_random(struct mat *a)
   size_t size = a->width * a->height;
   for (size_t i = 0; i < size; ++i)
   {
-    a->array[i] = (float)(rand() % 10000) / 100;
+    float tmp = (float)(rand() % 10000) / 100;
+    a->array[i] = tmp;
+    a->array_mirrored[(i / a->width) + (i % a->width) * a->height] = tmp;
   }
 }
 
